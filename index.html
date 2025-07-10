@@ -85,10 +85,14 @@
         removeBtn.className = "remove-btn";
         removeBtn.textContent = "×";
         removeBtn.title = "Remove item";
-        removeBtn.addEventListener("click", () => {
+        tag.style.cursor = 'pointer';  // show pointer cursor over the tag
+        tag.title = "Click to remove item";
+
+        tag.addEventListener("click", () => {
           addedItems.delete(selected);
           inventory.removeChild(tag);
         });
+
 
         tag.appendChild(removeBtn);
         inventory.appendChild(tag);
