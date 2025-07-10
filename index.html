@@ -5,8 +5,30 @@
   <title>Inventory Tracker</title>
   <style>
     body { font-family: Arial; padding: 2em; }
-    .tag { display: inline-block; background: #cce; margin: 0.2em; padding: 0.3em 0.6em; border-radius: 4px; }
-    input[type="text"] { padding: 0.5em; width: 300px; }
+    #inventory { margin-top: 1em; }
+    .tag {
+      display: inline-block;
+      background: #cce;
+      margin: 0.2em;
+      padding: 0.3em 0.8em 0.3em 0.6em;
+      border-radius: 4px;
+      position: relative;
+      user-select: none;
+      font-size: 14px;
+    }
+    .tag .remove-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #444;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      user-select: none;
+    }
+    input[type="text"] { padding: 0.5em; width: 300px; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -28,35 +50,49 @@
 
     const input = document.getElementById("itemInput");
     const inventory = document.getElementById("inventory");
+    const addedItems = new Set();
 
     input.addEventListener("input", () => {
       const query = input.value.toLowerCase();
       const matches = items.filter(item => item.toLowerCase().includes(query));
 
-      // Create a list of suggestions
-      const datalist = document.getElementById("suggestions");
-      if (datalist) datalist.remove();
+      const oldDatalist = document.getElementById("suggestions");
+      if (oldDatalist) oldDatalist.remove();
 
-      const newDatalist = document.createElement("datalist");
-      newDatalist.id = "suggestions";
+      const datalist = document.createElement("datalist");
+      datalist.id = "suggestions";
 
       matches.forEach(match => {
         const option = document.createElement("option");
         option.value = match;
-        newDatalist.appendChild(option);
+        datalist.appendChild(option);
       });
 
       input.setAttribute("list", "suggestions");
-      document.body.appendChild(newDatalist);
+      document.body.appendChild(datalist);
     });
 
     input.addEventListener("change", () => {
       const selected = input.value.trim();
-      if (selected && items.includes(selected)) {
+      if (selected && items.includes(selected) && !addedItems.has(selected)) {
+        addedItems.add(selected);
+
         const tag = document.createElement("span");
         tag.className = "tag";
         tag.textContent = selected;
+
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "remove-btn";
+        removeBtn.textContent = "×";
+        removeBtn.title = "Remove item";
+        removeBtn.addEventListener("click", () => {
+          addedItems.delete(selected);
+          inventory.removeChild(tag);
+        });
+
+        tag.appendChild(removeBtn);
         inventory.appendChild(tag);
+
         input.value = "";
       }
     });
