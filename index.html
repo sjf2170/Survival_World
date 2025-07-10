@@ -1,19 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Survival World Inventory</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Inventory Tracker</title>
+  <style>
+    body { font-family: Arial; padding: 2em; }
+    .tag { display: inline-block; background: #cce; margin: 0.2em; padding: 0.3em 0.6em; border-radius: 4px; }
+    input[type="text"] { padding: 0.5em; width: 300px; }
+  </style>
 </head>
 <body>
-  <h1>Inventory Tracker</h1>
 
-  <input id="resource-input" list="resource-list" placeholder="Type or select a resource">
-  <datalist id="resource-list"></datalist>
-  <button onclick="addResource()">Add</button>
+  <h2>Inventory Tracker</h2>
+  <input id="itemInput" type="text" placeholder="Type to search items...">
+  <div id="inventory"></div>
 
-  <div id="inventory-list"></div>
+  <script>
+    const items = [
+      "Titanium", "Copper", "Quartz", "Gold", "Silver", "Table Coral Sample", 
+      "Creepvine", "Creepvine Seed Cluster", "Stalker Tooth", "Battery", "Wiring Kit",
+      "Advanced Wiring Kit", "Computer Chip", "Fiber Mesh", "Silicone Rubber",
+      "Lubricant", "Glass", "Enamelled Glass", "Plasteel Ingot", "Power Cell",
+      "Scanner", "Knife", "Repair Tool", "Habitat Builder", "Seaglide", "Compass",
+      "Beacon", "Fins", "O2 Tank", "High Capacity O2 Tank", "Radiation Suit",
+      "Rebreather", "Propulsion Cannon"
+    ];
 
-  <script src="script.js"></script>
+    const input = document.getElementById("itemInput");
+    const inventory = document.getElementById("inventory");
+
+    input.addEventListener("input", () => {
+      const query = input.value.toLowerCase();
+      const matches = items.filter(item => item.toLowerCase().includes(query));
+
+      // Create a list of suggestions
+      const datalist = document.getElementById("suggestions");
+      if (datalist) datalist.remove();
+
+      const newDatalist = document.createElement("datalist");
+      newDatalist.id = "suggestions";
+
+      matches.forEach(match => {
+        const option = document.createElement("option");
+        option.value = match;
+        newDatalist.appendChild(option);
+      });
+
+      input.setAttribute("list", "suggestions");
+      document.body.appendChild(newDatalist);
+    });
+
+    input.addEventListener("change", () => {
+      const selected = input.value.trim();
+      if (selected && items.includes(selected)) {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = selected;
+        inventory.appendChild(tag);
+        input.value = "";
+      }
+    });
+  </script>
+
 </body>
 </html>
