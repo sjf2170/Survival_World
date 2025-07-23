@@ -2,105 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Inventory Tracker</title>
-  <style>
-    body { font-family: Arial; padding: 2em; }
-    #inventory { margin-top: 1em; }
-    .tag {
-      display: inline-block;
-      background: #cce;
-      margin: 0.2em;
-      padding: 0.3em 0.8em 0.3em 0.6em;
-      border-radius: 4px;
-      position: relative;
-      user-select: none;
-      font-size: 14px;
-    }
-    .tag .remove-btn {
-      position: absolute;
-      right: 4px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #444;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      user-select: none;
-    }
-    input[type="text"] { padding: 0.5em; width: 300px; font-size: 16px; }
-  </style>
+  <title>Crafting Recipes</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h2>Inventory Tracker</h2>
+  <h2>Crafting Recipes</h2>
+   <h3>Discovered Resources</h3>
   <input id="itemInput" type="text" placeholder="Type to search items...">
   <div id="inventory"></div>
 
-  <script>
-    const items = [
-      "Titanium", "Copper", "Quartz", "Gold", "Silver", "Table Coral Sample", 
-      "Creepvine", "Creepvine Seed Cluster", "Stalker Tooth", "Battery", "Wiring Kit",
-      "Advanced Wiring Kit", "Computer Chip", "Fiber Mesh", "Silicone Rubber",
-      "Lubricant", "Glass", "Enamelled Glass", "Plasteel Ingot", "Power Cell",
-      "Knife", "Seaglide", "Compass", "Fins", "O2 Tank", "High Capacity O2 Tank", "Radiation Suit",
-      "Rebreather", "Propulsion Cannon", "Acid Mushroom", "Lithium", "Aluminum Oxide Crystals", "Uraninite",
-      "Lead", "Magnetite", "Diamond", "Kyanite", "Cave Sulfur", "Blood Oil"
-    ];
+  <h3>Craftable Items</h3>
+  <ul id="craftable-list"></ul>
 
-    const input = document.getElementById("itemInput");
-    const inventory = document.getElementById("inventory");
-    const addedItems = new Set();
+  <section id="tool-selection">
+    <h3>Available Tools</h3>
+    <form id="tools-form">
+      <label><input type="checkbox" name="tools" value="Fabricator"> Fabricator</label>
+      <label><input type="checkbox" name="tools" value="Modification Station"> Modification Station</label>
+      <label><input type="checkbox" name="tools" value="Habitat Builder"> Habitat Builder</label>
+      <label><input type="checkbox" name="tools" value="Mobile Vehicle Bay"> Mobile Vehicle Bay</label>
+      <label><input type="checkbox" name="tools" value="Moonpool"> Moonpool</label>
+      <label><input type="checkbox" name="tools" value="Cyclops"> Cyclops</label>
+    </form>
+  </section>
 
-    input.addEventListener("input", () => {
-      const query = input.value.toLowerCase();
-      const matches = items.filter(item => item.toLowerCase().includes(query));
-
-      const oldDatalist = document.getElementById("suggestions");
-      if (oldDatalist) oldDatalist.remove();
-
-      const datalist = document.createElement("datalist");
-      datalist.id = "suggestions";
-
-      matches.forEach(match => {
-        const option = document.createElement("option");
-        option.value = match;
-        datalist.appendChild(option);
-      });
-
-      input.setAttribute("list", "suggestions");
-      document.body.appendChild(datalist);
-    });
-
-    input.addEventListener("change", () => {
-      const selected = input.value.trim();
-      if (selected && items.includes(selected) && !addedItems.has(selected)) {
-        addedItems.add(selected);
-
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = selected;
-
-        const removeBtn = document.createElement("span");
-        removeBtn.className = "remove-btn";
-        removeBtn.textContent = "×";
-        removeBtn.title = "Remove item";
-        tag.style.cursor = 'pointer';  // show pointer cursor over the tag
-        tag.title = "Click to remove item";
-
-        tag.addEventListener("click", () => {
-          addedItems.delete(selected);
-          inventory.removeChild(tag);
-        });
-
-
-        tag.appendChild(removeBtn);
-        inventory.appendChild(tag);
-
-        input.value = "";
-      }
-    });
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
