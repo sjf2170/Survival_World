@@ -20,8 +20,14 @@ const items = [
 const input = document.getElementById("itemInput");
 const inventory = document.getElementById("inventory");
 const addedItems = new Set();
-
 let recipes = {};
+
+// Create datalist once and attach to DOM
+const datalist = document.createElement("datalist");
+datalist.id = "suggestions";
+document.body.appendChild(datalist);
+input.setAttribute("list", "suggestions");
+
 fetch("crafting_recipes.json")
   .then(response => {
     if (!response.ok) throw new Error("Failed to load crafting_recipes.json");
@@ -33,26 +39,22 @@ fetch("crafting_recipes.json")
   })
   .catch(err => {
     console.error("Error loading crafting recipes:", err);
+    recipes = {}; // Fail gracefully
   });
 
 input.addEventListener("input", () => {
   const query = input.value.toLowerCase();
   const matches = items.filter(item => item.toLowerCase().includes(query));
 
-  const oldDatalist = document.getElementById("suggestions");
-  if (oldDatalist) oldDatalist.remove();
-
-  const datalist = document.createElement("datalist");
-  datalist.id = "suggestions";
-
+  // Clear old suggestions
+  datalist.innerHTML = "";
+  
+  // Add filtered options
   matches.forEach(match => {
     const option = document.createElement("option");
     option.value = match;
     datalist.appendChild(option);
   });
-
-  input.setAttribute("list", "suggestions");
-  document.body.appendChild(datalist);
 });
 
 input.addEventListener("change", () => {
@@ -112,8 +114,5 @@ function updateCraftableItems() {
   }
 }
 
-// Recalculate when tools are changed
 document.getElementById("tools-form").addEventListener("change", updateCraftableItems);
-
-// Also update when DOM is ready (in case recipes are ready early)
 window.addEventListener("DOMContentLoaded", updateCraftableItems);
